@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -30,8 +30,8 @@ test('빌드는 정적 파일과 Advanced Mode Worker를 dist에 생성한다', 
     readFileSync(path.join(root, 'dist', '_worker.js'), 'utf8'),
     readFileSync(path.join(root, 'worker.mjs'), 'utf8')
   );
-  assert.equal(
-    statSync(path.join(root, 'dist', 'GNU_AI_Pioneer_캠프_오리엔테이션_16x9.pptx')).size,
-    statSync(path.join(root, 'GNU_AI_Pioneer_캠프_오리엔테이션_16x9.pptx')).size
+  assert.deepEqual(
+    readFileSync(path.join(root, 'dist', 'GNU_AI_Pioneer_캠프_오리엔테이션_16x9.pptx')),
+    readFileSync(path.join(root, 'GNU_AI_Pioneer_캠프_오리엔테이션_16x9.pptx'))
   );
 });
