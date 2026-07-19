@@ -134,3 +134,22 @@ test('8개 조편성과 좌석배치도를 제공한다', () => {
   assert.match(html, /src="team-seating\.png"/);
   assert.ok(fs.existsSync(path.join(root, 'team-seating.png')), '좌석배치 이미지가 필요합니다');
 });
+
+test('결과물 제출 폼과 게시판을 제공한다', () => {
+  for (const id of ['results', 'result-form', 'result-list', 'result-status']) {
+    assert.match(html, new RegExp(`id="${id}"`), `${id} 영역이 필요합니다`);
+  }
+  assert.match(html, /href="#results"[^>]*>결과물/);
+  assert.match(html, /name="team"[^>]+required/);
+  assert.match(html, /name="submissionCode"[^>]+required/);
+  assert.match(html, /accept="[^"]*\.pdf[^"]*\.zip/);
+  assert.match(html, /aria-live="polite"/);
+});
+
+test('결과물 스크립트는 API를 안전하게 사용한다', () => {
+  assert.match(script, /fetch\('\/api\/submissions'/);
+  assert.match(script, /new FormData/);
+  assert.match(script, /textContent/);
+  assert.match(script, /x-admin-code/);
+  assert.doesNotMatch(script, /\.innerHTML\s*=/);
+});

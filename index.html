@@ -81,6 +81,7 @@
         <a href="#prepare">준비물</a>
         <a href="#teams">조편성</a>
         <a href="#schedule">전체 일정</a>
+        <a href="#results">결과물</a>
         <a href="#rules">이용 안내</a>
         <a href="#contact">연락처</a>
       </div>
@@ -311,6 +312,103 @@
             </li>
           </ol>
         </article>
+      </div>
+    </section>
+
+    <section class="results section" id="results" aria-labelledby="results-title">
+      <div class="wrap">
+        <div class="results__masthead">
+          <div class="section-heading section-heading--light">
+            <p class="section-kicker">DEMO DAY DROP</p>
+            <h2 id="results-title">우리 팀 결과물을<br>여기에 올려주세요.</h2>
+            <p>배포한 홈페이지 링크와 발표자료를 한곳에 모읍니다.</p>
+          </div>
+          <div class="results__rail" aria-label="제출 대상 1조부터 8조">
+            <span>1</span><span>2</span><span>3</span><span>4</span>
+            <span>5</span><span>6</span><span>7</span><span>8</span>
+          </div>
+        </div>
+
+        <div class="result-desk">
+          <aside class="result-brief" aria-label="결과물 제출 안내">
+            <span class="result-brief__chip">FINAL OUTPUT</span>
+            <h3>링크 또는 파일,<br>하나는 꼭 등록하세요.</h3>
+            <ol>
+              <li><span>01</span><p>조와 프로젝트 정보를 입력합니다.</p></li>
+              <li><span>02</span><p>배포 URL 또는 결과물 파일을 등록합니다.</p></li>
+              <li><span>03</span><p>안내받은 참가자 제출코드로 게시합니다.</p></li>
+            </ol>
+            <p class="result-brief__note">PDF·PPTX·ZIP·이미지 파일<br>파일당 최대 20MB</p>
+          </aside>
+
+          <form class="result-form" id="result-form" enctype="multipart/form-data">
+            <div class="result-form__row">
+              <label>
+                <span>조</span>
+                <select name="team" required>
+                  <option value="">선택</option>
+                  <option>1조</option><option>2조</option><option>3조</option><option>4조</option>
+                  <option>5조</option><option>6조</option><option>7조</option><option>8조</option>
+                </select>
+              </label>
+              <label>
+                <span>제출자 이름</span>
+                <input name="submitter" type="text" maxlength="30" autocomplete="name" placeholder="홍길동" required>
+              </label>
+            </div>
+
+            <label>
+              <span>프로젝트명</span>
+              <input name="title" type="text" maxlength="60" placeholder="프로젝트 이름을 입력하세요" required>
+            </label>
+
+            <label>
+              <span>한 줄 소개</span>
+              <textarea name="summary" maxlength="160" rows="3" placeholder="어떤 문제를 해결하는 결과물인지 알려주세요" required></textarea>
+            </label>
+
+            <label>
+              <span>배포 URL <small>선택</small></span>
+              <input name="liveUrl" type="url" maxlength="500" inputmode="url" placeholder="https://my-project.pages.dev">
+            </label>
+
+            <label>
+              <span>GitHub URL <small>선택</small></span>
+              <input name="githubUrl" type="url" maxlength="500" inputmode="url" placeholder="https://github.com/username/project">
+            </label>
+
+            <label class="result-file">
+              <span>첨부 파일 <small>선택 · 최대 20MB</small></span>
+              <input name="file" type="file" accept=".pdf,.pptx,.zip,.png,.jpg,.jpeg,.webp">
+            </label>
+
+            <label>
+              <span>참가자 제출코드</span>
+              <input name="submissionCode" type="password" maxlength="100" autocomplete="off" placeholder="안내받은 코드를 입력하세요" required>
+            </label>
+
+            <button class="result-submit" type="submit">
+              <span>결과물 게시하기</span><i aria-hidden="true">↗</i>
+            </button>
+            <p class="result-form__privacy">제출자 이름과 결과물은 이 페이지에 공개됩니다. 전화번호와 이메일은 수집하지 않습니다.</p>
+          </form>
+        </div>
+
+        <div class="result-board">
+          <div class="result-board__head">
+            <div>
+              <p class="section-kicker">LIVE SHOWCASE</p>
+              <h3>캠프 결과물</h3>
+            </div>
+            <span class="result-count" id="result-count">0개 프로젝트</span>
+          </div>
+          <p class="result-status" id="result-status" aria-live="polite">결과물을 불러오는 중입니다.</p>
+          <div class="result-list" id="result-list" aria-busy="true"></div>
+          <div class="result-admin">
+            <button type="button" id="result-admin-toggle">관리자 모드</button>
+            <p>잘못 등록된 결과물을 운영진이 삭제할 때 사용합니다.</p>
+          </div>
+        </div>
       </div>
     </section>
 
