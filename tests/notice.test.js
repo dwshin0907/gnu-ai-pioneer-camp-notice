@@ -25,7 +25,7 @@ test('문자 링크 미리보기에 집결 핵심 정보를 제공한다', () =>
 });
 
 test('집결과 버스 출발 정보를 정확히 안내한다', () => {
-  for (const text of ['09:40', '10:00', '월계관', '체육관', '가좌캠퍼스', '정각 출발']) {
+  for (const text of ['09:40', '10:00', '월계관', '체육관', '가좌캠퍼스', '버스는 10:00 출발']) {
     assert.ok(html.includes(text), `${text} 안내가 필요합니다`);
   }
   assert.match(html, /href="tel:010-6293-0916"/);
@@ -114,4 +114,23 @@ test('고정 전화 버튼은 탑승권 연락처가 화면에 보일 때 내용
   assert.match(css, /\.mobile-call\.is-visible/);
   assert.match(script, /IntersectionObserver/);
   assert.match(script, /classList\.toggle\('is-visible'/);
+});
+
+test('최종 참가 준비 문구와 운영 주체 표현을 사용한다', () => {
+  for (const text of [
+    '신분증 또는 학생증',
+    'Gmail 계정',
+    'Chrome 브라우저',
+    '김기현 선생님',
+    '한국AI교육진흥원',
+    '버스는 10:00 출발'
+  ]) {
+    assert.ok(html.includes(text), `${text} 문구가 필요합니다`);
+  }
+});
+
+test('8개 조편성과 좌석배치도를 제공한다', () => {
+  assert.equal((html.match(/data-team="\d"/g) || []).length, 8);
+  assert.match(html, /src="team-seating\.png"/);
+  assert.ok(fs.existsSync(path.join(root, 'team-seating.png')), '좌석배치 이미지가 필요합니다');
 });

@@ -162,6 +162,19 @@ input {
   border-radius: 999px;
 }
 
+.brand-partners {
+  margin: 10px 0 0;
+  color: #dceeff;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+
+.brand-partners span {
+  margin-inline: 5px;
+  color: #8fc7ff;
+}
+
 .hero__copy {
   margin: 58px 0 32px;
 }
@@ -407,7 +420,7 @@ input {
 .quick-nav a {
   flex: 1;
   min-height: 52px;
-  padding: 14px 8px;
+  padding: 14px 5px;
   color: var(--ink-soft);
   font-size: 13px;
   font-weight: 800;
@@ -629,6 +642,127 @@ input {
   background: #8fc7ff;
   border-radius: 50%;
   place-items: center;
+}
+
+.check-item--essential-tool {
+  border-color: rgba(143, 199, 255, 0.5);
+}
+
+.teams {
+  background: var(--paper);
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.team-card {
+  --team-color: var(--gnu-blue);
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.team-card[data-team="1"] { --team-color: #c95b55; }
+.team-card[data-team="2"] { --team-color: #35879a; }
+.team-card[data-team="3"] { --team-color: #9169b7; }
+.team-card[data-team="4"] { --team-color: #c37c28; }
+.team-card[data-team="5"] { --team-color: #559766; }
+.team-card[data-team="6"] { --team-color: #597dbc; }
+.team-card[data-team="7"] { --team-color: #b95791; }
+.team-card[data-team="8"] { --team-color: #718736; }
+
+.team-card h3 {
+  margin: 0;
+  padding: 10px 14px;
+  color: var(--white);
+  font-size: 16px;
+  background: var(--team-color);
+}
+
+.team-card ul {
+  display: grid;
+  gap: 0;
+  padding: 8px 14px 11px;
+  margin: 0;
+  list-style: none;
+}
+
+.team-card li {
+  padding: 6px 0;
+  font-size: 14px;
+  font-weight: 700;
+  border-bottom: 1px solid #edf1f6;
+}
+
+.team-card li:last-child {
+  border-bottom: 0;
+}
+
+.seat-map {
+  overflow: hidden;
+  margin: 24px 0 0;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+
+.seat-map figcaption {
+  padding: 20px;
+}
+
+.seat-map figcaption span,
+.seat-map figcaption strong {
+  display: block;
+}
+
+.seat-map figcaption span {
+  color: var(--gnu-blue);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.seat-map figcaption strong {
+  margin-top: 2px;
+  font-size: 20px;
+}
+
+.seat-map figcaption p {
+  margin: 9px 0 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.seat-map__viewport {
+  overflow-x: auto;
+  padding: 12px;
+  background: #f5f2eb;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.seat-map__viewport img {
+  display: block;
+  width: 920px;
+  max-width: none;
+  height: auto;
+  border-radius: 8px;
+}
+
+.seat-map__open {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+  padding: 12px 20px;
+  color: var(--gnu-blue);
+  font-size: 14px;
+  font-weight: 900;
+  text-decoration: none;
+  border-top: 1px solid var(--line);
 }
 
 .schedule {
@@ -1032,6 +1166,27 @@ input {
 
   .check-item--essential {
     grid-column: 1 / -1;
+  }
+
+  .team-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .seat-map figcaption {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .seat-map figcaption p {
+    max-width: 380px;
+    margin: 0;
+    text-align: right;
+  }
+
+  .seat-map__viewport img {
+    width: 100%;
   }
 
   .timeline::before {
