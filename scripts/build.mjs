@@ -9,7 +9,9 @@ const files = new Map([
   ['index.html', 'index.html'],
   ['styles.css', 'styles.css'],
   ['script.js', 'script.js'],
+  ['leader-email.mjs', 'leader-email.mjs'],
   ['team-seating.png', 'team-seating.png'],
+  ['GNU_AI_Pioneer_캠프_오리엔테이션_16x9.pptx', 'GNU_AI_Pioneer_캠프_오리엔테이션_16x9.pptx'],
   ['worker.mjs', '_worker.js'],
 ]);
 

@@ -13,7 +13,7 @@
   <meta property="og:site_name" content="GNU AI Pioneer 캠프">
   <title>7/20(월) 09:40 월계관 앞 집결 | GNU AI Pioneer 캠프</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="script.js" defer></script>
+  <script type="module" src="script.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">본문으로 바로가기</a>
@@ -81,6 +81,7 @@
         <a href="#prepare">준비물</a>
         <a href="#teams">조편성</a>
         <a href="#schedule">전체 일정</a>
+        <a href="#resources">자료·계정</a>
         <a href="#results">결과물</a>
         <a href="#rules">이용 안내</a>
         <a href="#contact">연락처</a>
@@ -312,6 +313,78 @@
             </li>
           </ol>
         </article>
+      </div>
+    </section>
+
+    <section class="resources section" id="resources" aria-labelledby="resources-title">
+      <div class="resources__grid" aria-hidden="true"></div>
+      <div class="wrap resources__inner">
+        <div class="section-heading">
+          <p class="section-kicker">CAMP RESOURCE DESK</p>
+          <h2 id="resources-title">자료는 여기서 받고,<br>조장 이메일도 보내주세요.</h2>
+          <p>오리엔테이션 자료 다운로드와 GPT 유료 계정 초대 준비를 한곳에서 진행합니다.</p>
+        </div>
+
+        <div class="resource-grid">
+          <article class="resource-card resource-card--download">
+            <div>
+              <span class="resource-chip">ORIENTATION · 11:00</span>
+              <h3>오리엔테이션<br>발표자료</h3>
+              <p>안전·운영 안내, 팀 편성, 아이스브레이킹 내용을 담았습니다.</p>
+            </div>
+            <dl class="resource-meta">
+              <div><dt>형식</dt><dd>PPTX</dd></div>
+              <div><dt>화면</dt><dd>16:9</dd></div>
+              <div><dt>분량</dt><dd>22장</dd></div>
+              <div><dt>크기</dt><dd>217KB</dd></div>
+            </dl>
+            <a class="resource-download" href="GNU_AI_Pioneer_캠프_오리엔테이션_16x9.pptx" download>
+              <span><small>첨부파일</small>오리엔테이션 PPTX 다운로드</span>
+              <i aria-hidden="true">↓</i>
+            </a>
+          </article>
+
+          <article class="resource-card resource-card--email">
+            <div class="resource-card__heading">
+              <span class="resource-chip resource-chip--orange">TEAM LEADER ONLY</span>
+              <h3>조장 이메일 보내기</h3>
+              <p>GPT 유료 계정 초대에 사용할 이메일을 운영총괄에게 보내주세요.</p>
+            </div>
+
+            <form class="leader-email-form" id="leader-email-form" data-recipient="whoareyoukh@naver.com">
+              <div class="leader-email-form__row">
+                <label>
+                  <span>조</span>
+                  <select name="leaderTeam" required>
+                    <option value="">선택</option>
+                    <option>1조</option><option>2조</option><option>3조</option><option>4조</option>
+                    <option>5조</option><option>6조</option><option>7조</option><option>8조</option>
+                  </select>
+                </label>
+                <label>
+                  <span>조장 이름</span>
+                  <input name="leaderName" type="text" maxlength="30" autocomplete="name" placeholder="홍길동" required>
+                </label>
+              </div>
+
+              <label>
+                <span>초대받을 이메일</span>
+                <input name="inviteEmail" type="email" maxlength="100" autocomplete="email" inputmode="email" placeholder="leader@example.com" required>
+              </label>
+
+              <label class="leader-consent">
+                <input name="privacyConsent" type="checkbox" required>
+                <span>GPT 유료 계정 초대 목적으로 이메일을 운영총괄에게 전달하는 데 동의합니다.</span>
+              </label>
+
+              <button class="leader-email-submit" type="submit">
+                <span>관리자에게 이메일 보내기</span><i aria-hidden="true">↗</i>
+              </button>
+              <p class="leader-email-note">받는 사람: <strong>whoareyoukh@naver.com</strong><br>버튼을 누른 뒤 메일 앱에서 내용을 확인하고 보내기 버튼을 눌러야 완료됩니다.</p>
+              <p class="leader-email-status" id="leader-email-status" aria-live="polite"></p>
+            </form>
+          </article>
+        </div>
       </div>
     </section>
 

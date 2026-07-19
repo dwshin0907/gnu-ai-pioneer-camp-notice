@@ -153,3 +153,24 @@ test('결과물 스크립트는 API를 안전하게 사용한다', () => {
   assert.match(script, /x-admin-code/);
   assert.doesNotMatch(script, /\.innerHTML\s*=/);
 });
+
+test('오리엔테이션 자료를 가벼운 PPTX 첨부파일로 제공한다', () => {
+  assert.match(html, /href="#resources"[^>]*>자료·계정/);
+  assert.match(html, /<section[^>]+id="resources"/);
+  assert.match(
+    html,
+    /href="GNU_AI_Pioneer_캠프_오리엔테이션_16x9\.pptx"[^>]+download/
+  );
+  assert.ok(html.includes('217KB'), '학생에게 파일 크기를 안내해야 합니다');
+});
+
+test('조장이 GPT 초대 이메일을 관리자에게 보낼 수 있다', () => {
+  assert.match(html, /id="leader-email-form"/);
+  assert.match(html, /name="leaderTeam"[^>]+required/);
+  assert.match(html, /name="leaderName"[^>]+required/);
+  assert.match(html, /name="inviteEmail"[^>]+type="email"[^>]+required/);
+  assert.match(html, /name="privacyConsent"[^>]+type="checkbox"[^>]+required/);
+  assert.match(html, /id="leader-email-status"[^>]+aria-live="polite"/);
+  assert.ok(html.includes('whoareyoukh@naver.com'), '운영총괄 수신 주소가 필요합니다');
+  assert.match(html, /메일 앱에서[^<]*보내기/);
+});

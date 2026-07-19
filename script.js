@@ -1,3 +1,6 @@
+import { buildLeaderMailto, isValidInviteEmail } from './leader-email.mjs';
+
+
 (function () {
   const storageKey = 'gnu-camp-prep';
   const items = [...document.querySelectorAll('[data-check-item]')];
@@ -37,6 +40,50 @@
       floatingCall.classList.add('is-visible');
     }
   }
+
+  const leaderEmailForm = document.querySelector('#leader-email-form');
+  const leaderEmailStatus = document.querySelector('#leader-email-status');
+
+  function setLeaderEmailStatus(message, tone = '') {
+    if (!leaderEmailStatus) return;
+    leaderEmailStatus.textContent = message;
+    leaderEmailStatus.classList.remove('is-error', 'is-success');
+    if (tone) leaderEmailStatus.classList.add(`is-${tone}`);
+  }
+
+  function submitLeaderEmail(event) {
+    event.preventDefault();
+    const teamInput = leaderEmailForm.elements.namedItem('leaderTeam');
+    const nameInput = leaderEmailForm.elements.namedItem('leaderName');
+    const emailInput = leaderEmailForm.elements.namedItem('inviteEmail');
+    const consentInput = leaderEmailForm.elements.namedItem('privacyConsent');
+    const inviteEmail = emailInput.value.trim();
+
+    if (!isValidInviteEmail(inviteEmail)) {
+      setLeaderEmailStatus('초대받을 이메일 주소를 다시 확인해 주세요.', 'error');
+      emailInput.focus();
+      return;
+    }
+    if (!consentInput.checked) {
+      setLeaderEmailStatus('이메일 전달 동의를 확인해 주세요.', 'error');
+      consentInput.focus();
+      return;
+    }
+
+    try {
+      const mailto = buildLeaderMailto({
+        team: teamInput.value,
+        leaderName: nameInput.value,
+        inviteEmail,
+      });
+      setLeaderEmailStatus('메일 앱을 열었습니다. 받는 사람과 내용을 확인한 뒤 보내기를 눌러주세요.', 'success');
+      window.location.href = mailto;
+    } catch (error) {
+      setLeaderEmailStatus(error.message, 'error');
+    }
+  }
+
+  leaderEmailForm?.addEventListener('submit', submitLeaderEmail);
 
   const resultForm = document.querySelector('#result-form');
   const resultList = document.querySelector('#result-list');
