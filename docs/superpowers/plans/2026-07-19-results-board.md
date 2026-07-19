@@ -2,15 +2,15 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 기존 캠프 안내 페이지에 참가자 코드로 보호되는 결과물 제출 폼과 R2 기반 공개 결과물 게시판을 추가한다.
+**Goal:** 기존 캠프 안내 페이지에 참가자 코드로 보호되는 결과물 제출 폼과 Cloudflare KV 기반 공개 결과물 게시판을 추가한다.
 
-**Architecture:** Pages Advanced Mode의 `_worker.js`가 `/api/*` 요청을 처리하고 나머지 요청은 `env.ASSETS.fetch()`로 전달한다. 게시글 JSON과 첨부 파일은 비공개 R2 버킷에 저장하며, 브라우저는 같은 출처 API만 사용한다.
+**Architecture:** Pages Advanced Mode의 `_worker.js`가 `/api/*` 요청을 처리하고 나머지 요청은 `env.ASSETS.fetch()`로 전달한다. 게시글 JSON과 첨부 파일은 비공개 KV 네임스페이스에 저장하며, 브라우저는 같은 출처 API만 사용한다.
 
-**Tech Stack:** HTML, CSS, browser JavaScript, Cloudflare Pages Functions/Workers, R2, Node.js 내장 테스트, Wrangler
+**Tech Stack:** HTML, CSS, browser JavaScript, Cloudflare Pages Functions/Workers, Workers KV, Node.js 내장 테스트, Wrangler
 
 ---
 
-### Task 1: Worker API와 R2 저장 계층
+### Task 1: Worker API와 KV 저장 계층
 
 **Files:**
 - Create: `worker.mjs`
@@ -18,7 +18,7 @@
 
 - [ ] **Step 1: 정상 제출과 목록 조회의 실패 테스트 작성**
 
-`tests/results-board.test.mjs`에 메모리 R2 대역을 만들고 다음 요청을 검증한다.
+`tests/results-board.test.mjs`에 메모리 KV 대역을 만들고 다음 요청을 검증한다.
 
 ```js
 test('참가자 코드로 링크 결과물을 등록하고 최신순으로 조회한다', async () => {
@@ -137,7 +137,7 @@ Expected: Worker 테스트가 모두 통과한다.
 
 ```bash
 git add worker.mjs tests/results-board.test.mjs
-git commit -m "feat: add R2 results board API"
+git commit -m "feat: add results board API"
 ```
 
 ### Task 2: 결과물 제출과 게시판 UI
@@ -243,10 +243,10 @@ Expected: `scripts/build.mjs`이 없어 실패한다.
   "name": "gnu-ai-pioneer-camp-notice",
   "pages_build_output_dir": "./dist",
   "compatibility_date": "2026-07-19",
-  "r2_buckets": [
+  "kv_namespaces": [
     {
-      "binding": "RESULTS_BUCKET",
-      "bucket_name": "gnu-ai-pioneer-camp-results"
+      "binding": "RESULTS_STORE",
+      "id": "<KV_NAMESPACE_ID>"
     }
   ]
 }
@@ -267,7 +267,7 @@ git add scripts/build.mjs wrangler.jsonc package.json .gitignore tests/build.tes
 git commit -m "chore: configure Pages results storage"
 ```
 
-### Task 4: R2 생성, 비밀값 설정, 배포 검증
+### Task 4: KV 생성, 비밀값 설정, 배포 검증
 
 **Files:**
 - Source changes: none
@@ -278,11 +278,11 @@ Run: `npm test && npm run build && git diff --check && git status --short`
 
 Expected: 모든 테스트가 통과하고 문서화된 변경 외 예기치 않은 파일이 없다.
 
-- [ ] **Step 2: R2 버킷 생성**
+- [ ] **Step 2: KV 네임스페이스 생성**
 
-Run: `npx --yes wrangler r2 bucket create gnu-ai-pioneer-camp-results`
+Run: `npx --yes wrangler kv namespace create gnu-ai-pioneer-camp-results`
 
-Expected: 버킷이 생성되거나 이미 존재한다는 확인을 받는다.
+Expected: KV 네임스페이스가 생성되고 반환된 ID를 `wrangler.jsonc`에 연결한다.
 
 - [ ] **Step 3: 비밀값 설정**
 

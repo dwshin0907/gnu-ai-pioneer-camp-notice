@@ -3,10 +3,10 @@
   "name": "gnu-ai-pioneer-camp-notice",
   "pages_build_output_dir": "./dist",
   "compatibility_date": "2026-07-19",
-  "r2_buckets": [
+  "kv_namespaces": [
     {
-      "binding": "RESULTS_BUCKET",
-      "bucket_name": "gnu-ai-pioneer-camp-results"
+      "binding": "RESULTS_STORE",
+      "id": "d0c1bed2487b4e048641a7d600875e59"
     }
   ]
 }

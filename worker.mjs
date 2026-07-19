@@ -158,10 +158,10 @@ function toPublicRecord(record) {
 }
 
 async function getRecord(env, id) {
-  const stored = await env.RESULTS_BUCKET.get(recordKey(id));
+  const stored = await env.RESULTS_STORE.get(recordKey(id));
   if (!stored) return null;
   try {
-    return JSON.parse(await stored.text());
+    return JSON.parse(stored);
   } catch (error) {
     console.error('Invalid result record', id, error);
     return null;
@@ -169,7 +169,7 @@ async function getRecord(env, id) {
 }
 
 async function createSubmission(request, env) {
-  if (!env.RESULTS_BUCKET || !env.SUBMISSION_CODE) {
+  if (!env.RESULTS_STORE || !env.SUBMISSION_CODE) {
     return fail('결과물 저장소가 아직 준비되지 않았습니다.', 503);
   }
 
@@ -243,17 +243,12 @@ async function createSubmission(request, env) {
 
   try {
     if (hasFile) {
-      await env.RESULTS_BUCKET.put(storedFileKey, await file.arrayBuffer(), {
-        httpMetadata: { contentType: record.fileType },
-        customMetadata: { originalName: safeFileName },
-      });
+      await env.RESULTS_STORE.put(storedFileKey, await file.arrayBuffer());
     }
     try {
-      await env.RESULTS_BUCKET.put(recordKey(id), JSON.stringify(record), {
-        httpMetadata: { contentType: 'application/json' },
-      });
+      await env.RESULTS_STORE.put(recordKey(id), JSON.stringify(record));
     } catch (error) {
-      if (storedFileKey) await env.RESULTS_BUCKET.delete(storedFileKey);
+      if (storedFileKey) await env.RESULTS_STORE.delete(storedFileKey);
       throw error;
     }
   } catch (error) {
@@ -265,17 +260,17 @@ async function createSubmission(request, env) {
 }
 
 async function listSubmissions(env) {
-  if (!env.RESULTS_BUCKET) return fail('결과물 저장소가 아직 준비되지 않았습니다.', 503);
+  if (!env.RESULTS_STORE) return fail('결과물 저장소가 아직 준비되지 않았습니다.', 503);
   try {
-    const listed = await env.RESULTS_BUCKET.list({ prefix: RECORD_PREFIX });
+    const listed = await env.RESULTS_STORE.list({ prefix: RECORD_PREFIX });
     const submissions = [];
-    for (const object of listed.objects) {
-      const stored = await env.RESULTS_BUCKET.get(object.key);
+    for (const key of listed.keys) {
+      const stored = await env.RESULTS_STORE.get(key.name);
       if (!stored) continue;
       try {
-        submissions.push(toPublicRecord(JSON.parse(await stored.text())));
+        submissions.push(toPublicRecord(JSON.parse(stored)));
       } catch (error) {
-        console.error('Skipping invalid result record', object.key, error);
+        console.error('Skipping invalid result record', key.name, error);
       }
     }
     submissions.sort((left, right) => right.createdAt.localeCompare(left.createdAt));
@@ -287,19 +282,19 @@ async function listSubmissions(env) {
 }
 
 async function downloadSubmission(id, env) {
-  if (!env.RESULTS_BUCKET) return fail('결과물 저장소가 아직 준비되지 않았습니다.', 503);
+  if (!env.RESULTS_STORE) return fail('결과물 저장소가 아직 준비되지 않았습니다.', 503);
   if (!isValidId(id)) return fail('첨부 파일을 찾을 수 없습니다.', 404);
   const record = await getRecord(env, id);
   if (!record?.fileKey) return fail('첨부 파일을 찾을 수 없습니다.', 404);
-  const file = await env.RESULTS_BUCKET.get(record.fileKey);
+  const file = await env.RESULTS_STORE.get(record.fileKey, 'arrayBuffer');
   if (!file) return fail('첨부 파일을 찾을 수 없습니다.', 404);
 
   const encodedName = encodeURIComponent(record.fileName).replace(/'/g, '%27');
-  return new Response(file.body, {
+  return new Response(file, {
     status: 200,
     headers: {
-      'content-type': record.fileType || file.httpMetadata?.contentType || 'application/octet-stream',
-      'content-length': String(record.fileSize || file.size),
+      'content-type': record.fileType || 'application/octet-stream',
+      'content-length': String(record.fileSize || file.byteLength),
       'content-disposition': `attachment; filename="result-file"; filename*=UTF-8''${encodedName}`,
       'cache-control': 'private, max-age=300',
       'x-content-type-options': 'nosniff',
@@ -308,7 +303,7 @@ async function downloadSubmission(id, env) {
 }
 
 async function deleteSubmission(id, request, env) {
-  if (!env.RESULTS_BUCKET || !env.ADMIN_CODE) {
+  if (!env.RESULTS_STORE || !env.ADMIN_CODE) {
     return fail('관리자 기능이 아직 준비되지 않았습니다.', 503);
   }
   if (!await secretsEqual(env.ADMIN_CODE, request.headers.get('x-admin-code'))) {
@@ -319,7 +314,7 @@ async function deleteSubmission(id, request, env) {
   if (!record) return fail('결과물을 찾을 수 없습니다.', 404);
   const keys = [recordKey(id)];
   if (record.fileKey) keys.push(record.fileKey);
-  await env.RESULTS_BUCKET.delete(keys);
+  await Promise.all(keys.map((key) => env.RESULTS_STORE.delete(key)));
   return jsonResponse({ deleted: true });
 }
 

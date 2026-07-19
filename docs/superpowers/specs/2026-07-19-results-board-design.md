@@ -11,7 +11,7 @@
 - 장점: 구현과 운영이 가장 단순하다.
 - 단점: 파일을 받을 수 없고 제출 결과를 페이지에 자동 게시하기 어렵다.
 
-### B. Cloudflare R2 단일 저장소 + Pages Worker API — 채택
+### B. Cloudflare KV 단일 저장소 + Pages Worker API — 채택
 
 - 장점: 현재 Pages 배포 구조를 유지하면서 파일과 게시글 메타데이터를 한곳에 저장할 수 있다. 8개 조 규모에서는 별도 데이터베이스가 필요 없다.
 - 단점: 댓글, 복잡한 검색, 심사 점수처럼 관계형 데이터가 늘어나면 한계가 있다.
@@ -42,16 +42,16 @@
 
 ## 저장 구조와 API
 
-Cloudflare R2 버킷 바인딩 이름은 `RESULTS_BUCKET`으로 한다.
+Cloudflare KV 네임스페이스 바인딩 이름은 `RESULTS_STORE`로 한다. 최초 설계의 R2는 계정에서 별도 활성화가 필요했으므로, 무료 Workers 플랜에 포함되고 값당 25MiB를 지원하는 KV로 전환한다. 캠프 첨부 제한은 20MB로 유지한다.
 
-- 게시글: `records/{submissionId}.json`
-- 첨부: `files/{submissionId}/{sanitizedFileName}`
+- 게시글: `records/{submissionId}.json` 키
+- 첨부: `files/{submissionId}/{sanitizedFileName}` 키
 
 API는 다음 네 동작으로 제한한다.
 
 - `GET /api/submissions`: `records/` 객체를 읽어 최신순 JSON 목록 반환
 - `POST /api/submissions`: 제출코드와 입력값 검증 후 파일·게시글 저장
-- `GET /api/files/{submissionId}`: 비공개 R2 첨부를 안전한 다운로드 응답으로 전달
+- `GET /api/files/{submissionId}`: 비공개 KV 첨부를 안전한 다운로드 응답으로 전달
 - `DELETE /api/submissions/{submissionId}`: 관리자 코드 검증 후 게시글과 첨부 삭제
 
 파일 저장 뒤 게시글 저장이 실패하면 이미 저장한 파일을 제거한다. 목록 중 손상된 JSON 하나가 있어도 나머지 게시글은 반환하고 서버 로그에 오류를 남긴다.
@@ -63,7 +63,7 @@ API는 다음 네 동작으로 제한한다.
 - 관리자 삭제코드는 `x-admin-code` 헤더로 받는다.
 - 파일 확장자, MIME 유형, 크기를 서버에서 다시 검사한다.
 - 첨부 다운로드에는 `Content-Disposition: attachment`와 `X-Content-Type-Options: nosniff`를 설정한다.
-- R2 버킷은 공개하지 않고 파일은 다운로드 API를 통해서만 제공한다.
+- KV 네임스페이스는 공개하지 않고 파일은 다운로드 API를 통해서만 제공한다.
 - 제출자 이름 외의 개인정보는 수집하지 않는다.
 - 이번 범위에서는 Turnstile과 사용자 계정 로그인을 넣지 않는다. 참가자 제출코드가 유출되거나 캠프 이후 계속 운영할 경우 Turnstile 또는 개별 로그인을 후속 적용한다.
 
@@ -76,17 +76,17 @@ API는 다음 네 동작으로 제한한다.
 - `index.html`: 빠른 메뉴, 제출 폼, 결과물 목록 템플릿 추가
 - `styles.css`: 결과물 섹션과 제출 상태의 반응형 스타일 추가
 - `script.js`: 제출, 목록 조회, 다운로드 링크, 관리자 삭제 UI 추가
-- `worker.js`: API 라우팅, 검증, R2 저장·조회·삭제, 정적 파일 전달
-- `wrangler.jsonc`: Pages 출력 디렉터리와 R2 바인딩 정의
+- `worker.js`: API 라우팅, 검증, KV 저장·조회·삭제, 정적 파일 전달
+- `wrangler.jsonc`: Pages 출력 디렉터리와 KV 바인딩 정의
 - `tests/results-board.test.js`: Worker API와 입력 검증 테스트
 - `tests/notice.test.js`: 새 섹션과 접근성 연결 확인
 
 ## 테스트와 배포 확인
 
-- API 테스트는 메모리 R2 대역을 사용해 정상 제출, 잘못된 코드, 필수값, 파일 제한, 목록, 다운로드, 관리자 삭제를 검증한다.
+- API 테스트는 메모리 KV 대역을 사용해 정상 제출, 잘못된 코드, 필수값, 파일 제한, 목록, 다운로드, 관리자 삭제를 검증한다.
 - 기존 13개 공지 테스트를 함께 실행해 회귀를 확인한다.
 - 로컬 정적 파일 구성과 Worker 모듈 로딩을 확인한다.
-- R2 버킷과 두 비밀값을 만든 뒤 Cloudflare Pages에 배포한다.
+- KV 네임스페이스와 두 비밀값을 만든 뒤 Cloudflare Pages에 배포한다.
 - 공개 주소에서 페이지 200, 목록 API 200, 잘못된 제출코드 거절, 테스트 게시물의 등록·조회·삭제를 확인한다.
 
 ## 완료 기준

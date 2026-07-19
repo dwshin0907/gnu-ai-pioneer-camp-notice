@@ -4,29 +4,7 @@ import assert from 'node:assert/strict';
 import worker from '../worker.mjs';
 
 
-class MemoryR2Object {
-  constructor(key, entry) {
-    this.key = key;
-    this.size = entry.bytes.byteLength;
-    this.httpMetadata = entry.httpMetadata ?? {};
-    this.customMetadata = entry.customMetadata ?? {};
-    this.body = entry.bytes;
-    this._bytes = entry.bytes;
-  }
-
-  async text() {
-    return new TextDecoder().decode(this._bytes);
-  }
-
-  async arrayBuffer() {
-    return this._bytes.buffer.slice(
-      this._bytes.byteOffset,
-      this._bytes.byteOffset + this._bytes.byteLength
-    );
-  }
-}
-
-class MemoryR2Bucket {
+class MemoryKvNamespace {
   constructor() {
     this.entries = new Map();
   }
@@ -42,38 +20,36 @@ class MemoryR2Bucket {
     } else {
       bytes = new Uint8Array(await new Response(value).arrayBuffer());
     }
-    this.entries.set(key, {
-      bytes: new Uint8Array(bytes),
-      httpMetadata: options.httpMetadata,
-      customMetadata: options.customMetadata,
-    });
-    return { key, size: bytes.byteLength };
+    this.entries.set(key, new Uint8Array(bytes));
   }
 
-  async get(key) {
-    const entry = this.entries.get(key);
-    return entry ? new MemoryR2Object(key, entry) : null;
+  async get(key, type = 'text') {
+    const bytes = this.entries.get(key);
+    if (!bytes) return null;
+    if (type === 'arrayBuffer') {
+      return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+    }
+    const text = new TextDecoder().decode(bytes);
+    return type === 'json' ? JSON.parse(text) : text;
   }
 
   async list({ prefix = '' } = {}) {
     return {
-      objects: [...this.entries]
-        .filter(([key]) => key.startsWith(prefix))
-        .map(([key, entry]) => new MemoryR2Object(key, entry)),
-      truncated: false,
+      keys: [...this.entries.keys()]
+        .filter((key) => key.startsWith(prefix))
+        .map((name) => ({ name })),
+      list_complete: true,
     };
   }
 
-  async delete(keys) {
-    for (const key of Array.isArray(keys) ? keys : [keys]) {
-      this.entries.delete(key);
-    }
+  async delete(key) {
+    this.entries.delete(key);
   }
 }
 
 function makeEnv() {
   return {
-    RESULTS_BUCKET: new MemoryR2Bucket(),
+    RESULTS_STORE: new MemoryKvNamespace(),
     SUBMISSION_CODE: 'student-secret',
     ADMIN_CODE: 'admin-secret',
     ASSETS: {
