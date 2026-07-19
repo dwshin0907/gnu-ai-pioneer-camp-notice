@@ -8,6 +8,8 @@ const htmlPath = path.join(root, 'index.html');
 const cssPath = path.join(root, 'styles.css');
 const scriptPath = path.join(root, 'script.js');
 const html = fs.existsSync(htmlPath) ? fs.readFileSync(htmlPath, 'utf8') : '';
+const css = fs.existsSync(cssPath) ? fs.readFileSync(cssPath, 'utf8') : '';
+const script = fs.existsSync(scriptPath) ? fs.readFileSync(scriptPath, 'utf8') : '';
 
 test('학생 공지 페이지 파일이 존재한다', () => {
   assert.ok(fs.existsSync(htmlPath), 'index.html이 필요합니다');
@@ -103,4 +105,13 @@ test('학생에게 불필요한 운영 연락처는 공개하지 않는다', () 
   for (const phone of ['010-8831-0705', '010-8911-9800', '010-4951-0699', '010-3835-1145', '055-851-7216']) {
     assert.ok(!html.includes(phone), `${phone}는 학생 공지에서 제외해야 합니다`);
   }
+});
+
+test('고정 전화 버튼은 탑승권 연락처가 화면에 보일 때 내용을 가리지 않는다', () => {
+  assert.match(html, /<section class="boarding-pass"[^>]+data-hero-contact/);
+  assert.match(html, /data-floating-call/);
+  assert.match(css, /\.mobile-call\s*\{[\s\S]*?opacity:\s*0/);
+  assert.match(css, /\.mobile-call\.is-visible/);
+  assert.match(script, /IntersectionObserver/);
+  assert.match(script, /classList\.toggle\('is-visible'/);
 });

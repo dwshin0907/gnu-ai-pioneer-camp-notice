@@ -2,4 +2,5 @@
 node_modules/
 .wrangler/
 screenshots/
+dist/
 *.log

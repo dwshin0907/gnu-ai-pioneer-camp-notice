@@ -934,6 +934,16 @@ input {
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 16px;
   box-shadow: 0 12px 36px rgba(0, 52, 110, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(18px);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.mobile-call.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 .mobile-call > span:first-child {

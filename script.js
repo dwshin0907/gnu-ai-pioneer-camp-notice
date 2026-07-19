@@ -22,4 +22,19 @@
       }
     });
   });
+
+  const heroContact = document.querySelector('[data-hero-contact]');
+  const floatingCall = document.querySelector('[data-floating-call]');
+
+  if (heroContact && floatingCall) {
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(([entry]) => {
+        floatingCall.classList.toggle('is-visible', !entry.isIntersecting);
+      }, { threshold: 0.1 });
+
+      observer.observe(heroContact);
+    } else {
+      floatingCall.classList.add('is-visible');
+    }
+  }
 })();
