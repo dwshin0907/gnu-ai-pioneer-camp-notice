@@ -1,0 +1,13 @@
+{
+  "name": "gnu-ai-pioneer-camp-notice",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GNU AI Pioneer 캠프 1차 학생 공지 페이지",
+  "scripts": {
+    "test": "node --test",
+    "serve": "npx --yes serve . -l 4173"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
