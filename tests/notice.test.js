@@ -169,6 +169,10 @@ test('자료 영역에서 노션 실습페이지를 안전하게 새 탭으로 �
     html,
     /<a[^>]+href="https:\/\/m\.site\.naver\.com\/2akZH"[^>]+target="_blank"[^>]+rel="noopener noreferrer"[^>]*>[\s\S]*?노션 실습페이지 열기[\s\S]*?<\/a>/
   );
+  assert.match(
+    css,
+    /\.resource-download--notion\s+small\s*\{[^}]*color:\s*var\(--white\)/s
+  );
 });
 
 test('조장이 GPT 초대 이메일을 관리자에게 보낼 수 있다', () => {

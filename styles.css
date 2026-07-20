@@ -1021,7 +1021,7 @@ textarea {
 }
 
 .resource-download--notion small {
-  color: #bfe3ff;
+  color: var(--white);
 }
 
 .resource-card--email {
