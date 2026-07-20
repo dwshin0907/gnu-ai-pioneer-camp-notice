@@ -439,6 +439,114 @@ textarea {
   background: #eef6ff;
 }
 
+.quick-nav .quick-nav__wifi {
+  color: #8b3500;
+  background: var(--signal-light);
+}
+
+.quick-nav .quick-nav__wifi:hover,
+.quick-nav .quick-nav__wifi:focus-visible {
+  color: #642600;
+  background: #ffe1cc;
+}
+
+.wifi-access {
+  padding: 22px 0 0;
+  scroll-margin-top: 58px;
+}
+
+.wifi-ticket {
+  position: relative;
+  overflow: hidden;
+  color: var(--white);
+  background: var(--deep-blue);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+}
+
+.wifi-ticket::after {
+  position: absolute;
+  right: -42px;
+  bottom: -48px;
+  width: 132px;
+  height: 132px;
+  content: "";
+  pointer-events: none;
+  border: 27px solid rgba(249, 115, 22, 0.24);
+  border-radius: 50%;
+}
+
+.wifi-ticket__intro {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 15px;
+  padding: 23px 22px 16px;
+}
+
+.wifi-chip {
+  width: fit-content;
+  padding: 6px 9px;
+  color: #642600;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  background: var(--signal);
+  border-radius: 999px;
+}
+
+.wifi-ticket h2 {
+  margin: 0;
+  font-size: 25px;
+  line-height: 1.15;
+  letter-spacing: -0.05em;
+}
+
+.wifi-ticket__intro p {
+  margin: 7px 0 0;
+  color: #d6e9ff;
+  font-size: 13px;
+}
+
+.wifi-credentials {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 8px;
+  padding: 0 14px 14px;
+  margin: 0;
+}
+
+.wifi-credentials div {
+  display: grid;
+  grid-template-columns: minmax(95px, 0.75fr) 1.25fr;
+  gap: 12px;
+  align-items: center;
+  min-height: 60px;
+  padding: 10px 14px;
+  color: var(--ink);
+  background: var(--white);
+  border-radius: 12px;
+}
+
+.wifi-credentials dt {
+  color: var(--ink-soft);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.wifi-credentials dd {
+  margin: 0;
+}
+
+.wifi-credentials code {
+  color: var(--gnu-blue);
+  font-family: Consolas, "SFMono-Regular", monospace;
+  font-size: 19px;
+  font-weight: 950;
+  letter-spacing: 0.01em;
+}
+
 .section {
   padding: 76px 0;
 }
@@ -1862,6 +1970,33 @@ textarea {
 
   .seat-map__viewport img {
     width: 100%;
+  }
+
+  .wifi-ticket {
+    display: grid;
+    grid-template-columns: minmax(205px, 0.78fr) minmax(0, 1.22fr);
+    align-items: center;
+  }
+
+  .wifi-ticket__intro {
+    padding: 26px 24px;
+  }
+
+  .wifi-credentials {
+    grid-template-columns: 1fr 1fr;
+    padding: 14px 14px 14px 0;
+  }
+
+  .wifi-credentials div {
+    display: block;
+    min-height: 86px;
+    padding: 14px 16px;
+  }
+
+  .wifi-credentials code {
+    display: block;
+    margin-top: 5px;
+    font-size: 21px;
   }
 
   .resource-grid {

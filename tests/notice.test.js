@@ -174,3 +174,10 @@ test('조장이 GPT 초대 이메일을 관리자에게 보낼 수 있다', () =
   assert.ok(html.includes('whoareyoukh@naver.com'), '운영총괄 수신 주소가 필요합니다');
   assert.match(html, /메일 앱에서[^<]*보내기/);
 });
+
+test('상단에서 강의실 와이파이 접속 정보를 안내한다', () => {
+  assert.match(html, /href="#wifi"[^>]*>와이파이/);
+  assert.match(html, /<section[^>]+id="wifi"/);
+  assert.match(html, /<dt>네트워크 ID<\/dt>\s*<dd><code>kb_sc<\/code><\/dd>/);
+  assert.match(html, /<dt>비밀번호<\/dt>\s*<dd><code>kbsc4000<\/code><\/dd>/);
+});
