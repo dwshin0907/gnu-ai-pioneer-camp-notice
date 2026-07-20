@@ -164,6 +164,13 @@ test('오리엔테이션 자료를 가벼운 PPTX 첨부파일로 제공한다',
   assert.ok(html.includes('217KB'), '학생에게 파일 크기를 안내해야 합니다');
 });
 
+test('자료 영역에서 노션 실습페이지를 안전하게 새 탭으로 연다', () => {
+  assert.match(
+    html,
+    /<a[^>]+href="https:\/\/m\.site\.naver\.com\/2akZH"[^>]+target="_blank"[^>]+rel="noopener noreferrer"[^>]*>[\s\S]*?노션 실습페이지 열기[\s\S]*?<\/a>/
+  );
+});
+
 test('조장이 GPT 초대 이메일을 관리자에게 보낼 수 있다', () => {
   assert.match(html, /id="leader-email-form"/);
   assert.match(html, /name="leaderTeam"[^>]+required/);

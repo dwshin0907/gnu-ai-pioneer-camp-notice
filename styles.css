@@ -1013,6 +1013,17 @@ textarea {
   font-style: normal;
 }
 
+.resource-download--notion {
+  margin-top: 10px;
+  color: var(--white);
+  background: rgba(158, 212, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.resource-download--notion small {
+  color: #bfe3ff;
+}
+
 .resource-card--email {
   color: var(--ink);
   background: var(--white);
