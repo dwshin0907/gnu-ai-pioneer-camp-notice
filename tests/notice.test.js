@@ -177,7 +177,15 @@ test('조장이 GPT 초대 이메일을 관리자에게 보낼 수 있다', () =
 
 test('상단에서 강의실 와이파이 접속 정보를 안내한다', () => {
   assert.match(html, /href="#wifi"[^>]*>와이파이/);
-  assert.match(html, /<section[^>]+id="wifi"/);
+  assert.match(html, /<section[^>]+id="wifi"[^>]+aria-labelledby="wifi-title"/);
+  assert.match(html, /<h2 id="wifi-title">강의실 Wi‑Fi<\/h2>/);
   assert.match(html, /<dt>네트워크 ID<\/dt>\s*<dd><code>kb_sc<\/code><\/dd>/);
   assert.match(html, /<dt>비밀번호<\/dt>\s*<dd><code>kbsc4000<\/code><\/dd>/);
+
+  const wifiTab = html.indexOf('href="#wifi"');
+  const prepareTab = html.indexOf('href="#prepare"');
+  const wifiSection = html.indexOf('id="wifi"');
+  const overviewSection = html.indexOf('<section class="overview');
+  assert.ok(wifiTab > -1 && wifiTab < prepareTab, '와이파이는 첫 번째 상단 탭이어야 합니다');
+  assert.ok(wifiSection > wifiTab && wifiSection < overviewSection, '와이파이 카드는 첫 콘텐츠여야 합니다');
 });
